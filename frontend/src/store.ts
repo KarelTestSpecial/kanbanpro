@@ -47,38 +47,38 @@ const useStore = create<Store>((set, get) => ({
 
   // Acties
   login: async (username, password) => {
-    const response = await axiosInstance.post('/auth/login', { username, password });
-    // Gebaseerd op AuthResponse.java, verwachten we een object met een 'jwt' property.
-    const token = response.data.jwt;
-    localStorage.setItem('token', token);
-    set({ token, user: { username }, isAuthenticated: true });
-  },
+    try {
+        const response = await axiosInstance.post('/auth/login', { username, password });
+        const token = response.data.token;
+        if (token) {
+            localStorage.setItem('token', token);
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            set({ isAuthenticated: true, token: token, user: { username } });
+        }
+    } catch (error) {
+        console.error("Login failed:", error);
+        throw error; // Gooi de fout door zodat de component het kan afhandelen
+    }
+},
 
   register: async (username, password) => {
     await axiosInstance.post('/auth/register', { username, password });
   },
 
-  logout: () => {
+logout: () => {
     localStorage.removeItem('token');
-    set({ token: null, user: null, isAuthenticated: false, tasks: [] });
-  },
+    delete axiosInstance.defaults.headers.common['Authorization'];
+    set({ isAuthenticated: false, token: null, user: null, tasks: [] });
+},
 
   fetchTasks: async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        try {
-            const response = await axiosInstance.get('/tasks', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            set({ tasks: response.data });
-        } catch (error) {
-            console.error("Failed to fetch tasks:", error);
-            // Optioneel: roep hier logout aan als het token ongeldig is
-            // set({ token: null, isAuthenticated: false, user: null });
-            // localStorage.removeItem('token');
-        }
+    try {
+        const response = await axiosInstance.get('/tasks');
+        set({ tasks: response.data });
+    } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+        // Als we hier een 401 krijgen, moeten we uitloggen
+        get().logout();
     }
 },
 
