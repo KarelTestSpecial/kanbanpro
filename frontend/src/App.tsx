@@ -21,11 +21,9 @@ const PrivateRoute = ({ children }: { children: ReactElement }) => {
 
 // --- KanbanBoard Component ---
 const KanbanBoard = () => {
-  const { tasks, fetchTasks, updateTaskStatus } = useStore((state: Store) => ({
-    tasks: state.tasks,
-    fetchTasks: state.fetchTasks,
-    updateTaskStatus: state.updateTaskStatus,
-  }));
+  const tasks = useStore((state: Store) => state.tasks);
+  const fetchTasks = useStore((state: Store) => state.fetchTasks);
+  const updateTaskStatus = useStore((state: Store) => state.updateTaskStatus);
   const [activeId, setActiveId] = useState<string | number | null>(null);
 
   useEffect(() => {
