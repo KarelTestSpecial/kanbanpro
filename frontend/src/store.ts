@@ -61,8 +61,15 @@ const useStore = create<Store>((set, get) => ({
   },
 
   fetchTasks: async () => {
-    const response = await axiosInstance.get('/tasks');
-    set({ tasks: response.data });
+    const token = get().token;
+    if (token) {
+        const response = await axiosInstance.get('/tasks', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        set({ tasks: response.data });
+    }
   },
 
   updateTaskStatus: async (taskId, status) => {
