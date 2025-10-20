@@ -28,6 +28,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     transition,
   } = useSortable({ id: task.id });
 
+  const handleDelete = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    deleteTask(task.id);
+  };
+
   // Stijlen voor de drag-and-drop animatie
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -48,7 +53,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
           <IconButton
             aria-label="delete"
             size="small"
-            onClick={() => deleteTask(task.id)}
+            onClick={handleDelete}
             sx={{
               position: 'absolute',
               top: 8,
