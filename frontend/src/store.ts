@@ -82,23 +82,26 @@ logout: () => {
     }
 },
 
-  updateTaskStatus: async (taskId, status) => {
+  updateTaskStatus: async (taskId, newStatus) => {
     const originalTasks = get().tasks;
-    // Optimistische update van de lokale state
-    const updatedTasks = originalTasks.map(task =>
-      task.id === taskId ? { ...task, status } : task
-    );
-    set({ tasks: updatedTasks });
+    // Optimistic UI update
+    set((state) => ({
+        tasks: state.tasks.map(task =>
+            task.id === taskId ? { ...task, status: newStatus } : task
+        )
+    }));
 
     try {
-      // API-aanroep om de backend bij te werken
-      await axiosInstance.put(`/tasks/${taskId}/status`, { status });
+        const taskToUpdate = originalTasks.find(t => t.id === taskId);
+        if (taskToUpdate) {
+            await axiosInstance.put(`/tasks/${taskId}`, { ...taskToUpdate, status: newStatus });
+        }
     } catch (error) {
-      // Bij een fout, zet de originele taken terug
-      set({ tasks: originalTasks });
-      console.error("Failed to update task status:", error);
+        console.error("Failed to update task status:", error);
+        // Rollback op fout
+        set({ tasks: originalTasks });
     }
-  },
+},
 
   createTask: async (taskData: { title: string; description: string; }) => {
     try {

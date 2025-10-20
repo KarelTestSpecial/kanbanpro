@@ -36,24 +36,16 @@ const KanbanBoard = () => {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    setActiveId(null);
     const { active, over } = event;
 
-    if (!over) return;
-
-    const activeTask = tasks.find(t => t.id === active.id);
-    if (!activeTask) return;
-
-    // Bepaal de nieuwe status, of de drop nu op een kolom of een andere taak was
-    const overId = over.id;
-    const overTask = tasks.find(t => t.id === overId);
-    const newStatus = overTask ? overTask.status : (overId as string);
-    
-    const statuses = ['TODO', 'IN_PROGRESS', 'DONE'];
-    if (statuses.includes(newStatus) && activeTask.status !== newStatus) {
-      updateTaskStatus(active.id as number, newStatus);
+    if (over && active.id !== over.id) {
+        const taskId = Number(active.id);
+        const newStatus = over.id as string;
+        
+        updateTaskStatus(taskId, newStatus);
     }
-  };
+    setActiveId(null);
+};
 
   const statuses = ['TODO', 'IN_PROGRESS', 'DONE'];
   const taskIds = tasks.map(t => t.id);
