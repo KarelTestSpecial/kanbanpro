@@ -11,7 +11,7 @@ import KanbanColumn from './components/KanbanColumn';
 import TaskCard from './components/TaskCard';
 
 // Store-import
-import useStore, { type Store } from './store';
+import useStore, { type Store, axiosInstance } from './store';
 
 // --- PrivateRoute voor geauthenticeerde toegang ---
 const PrivateRoute = ({ children }: { children: ReactElement }) => {
@@ -87,6 +87,13 @@ const KanbanBoard = () => {
 
 // --- Hoofd App Component met Routing ---
 function App() {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>

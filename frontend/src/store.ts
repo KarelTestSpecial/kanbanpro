@@ -30,7 +30,7 @@ interface Actions {
 export type Store = State & Actions;
 
 // Maak een axios instance aan
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
       baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
 });
 
@@ -76,9 +76,7 @@ logout: () => {
         const response = await axiosInstance.get('/tasks');
         set({ tasks: response.data });
     } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-        // Als we hier een 401 krijgen, moeten we uitloggen
-        get().logout();
+        console.error("Failed to fetch tasks, token might be invalid:", error);
     }
 },
 
