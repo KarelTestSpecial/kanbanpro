@@ -64,16 +64,23 @@ const useStore = create<Store>((set, get) => ({
   },
 
   fetchTasks: async () => {
-    const token = get().token;
+    const token = localStorage.getItem('token');
     if (token) {
-        const response = await axiosInstance.get('/tasks', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        set({ tasks: response.data });
+        try {
+            const response = await axiosInstance.get('/tasks', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            set({ tasks: response.data });
+        } catch (error) {
+            console.error("Failed to fetch tasks:", error);
+            // Optioneel: roep hier logout aan als het token ongeldig is
+            // set({ token: null, isAuthenticated: false, user: null });
+            // localStorage.removeItem('token');
+        }
     }
-  },
+},
 
   updateTaskStatus: async (taskId, status) => {
     const originalTasks = get().tasks;
