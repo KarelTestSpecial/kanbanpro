@@ -3,6 +3,8 @@ package pro.kanban.backend.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import pro.kanban.backend.model.Task;
 import pro.kanban.backend.model.User;
@@ -21,11 +23,15 @@ public class TaskController {
     private final UserRepository userRepository;
 
     private User getUserByPrincipal(Principal principal) {
+        if (principal == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
         return userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new RuntimeException("User not found: " + principal.getName()));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + principal.getName()));
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public List<Task> getAllTasks(Principal principal) {
         User user = getUserByPrincipal(principal);
         return taskRepository.findAllByUserId(user.getId());
