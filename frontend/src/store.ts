@@ -35,12 +35,15 @@ const axiosInstance = axios.create({
 });
 
 // Exporteer de store, aangemaakt met 'create<Store>((set, get) => ({ ... }))'
+const initialState: State = {
+    token: localStorage.getItem('token'),
+    isAuthenticated: !!localStorage.getItem('token'),
+    user: null, 
+    tasks: []
+};
+
 const useStore = create<Store>((set, get) => ({
-  // Initiële state
-  token: localStorage.getItem('token'),
-  user: null,
-  tasks: [],
-  isAuthenticated: !!localStorage.getItem('token'),
+  ...initialState,
 
   // Acties
   login: async (username, password) => {
