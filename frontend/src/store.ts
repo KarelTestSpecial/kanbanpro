@@ -102,12 +102,15 @@ logout: () => {
 
   createTask: async (taskData: { title: string; description: string; }) => {
     try {
-        await axiosInstance.post('/tasks', taskData);
-        get().fetchTasks(); // Herlaad de takenlijst om de nieuwe taak te tonen
+        const response = await axiosInstance.post('/tasks', taskData);
+        const newTask = response.data;
+        set((state) => ({
+            tasks: [...state.tasks, newTask]
+        }));
     } catch (error) {
         console.error("Failed to create task:", error);
     }
-  },
+},
 }));
 
 // Voeg een request interceptor toe om de JWT token automatisch mee te sturen
