@@ -9,6 +9,7 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import KanbanColumn from './components/KanbanColumn';
 import TaskCard from './components/TaskCard';
+import CreateTaskForm from './components/CreateTaskForm'; // Add this import
 
 // Store-import
 import useStore, { type Store, axiosInstance } from './store';
@@ -65,6 +66,7 @@ const KanbanBoard = () => {
           <Typography variant="h4" component="h1" gutterBottom>
             Kanban Board
           </Typography>
+          <CreateTaskForm /> {/* Add this component */}
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
             {statuses.map((status) => (
               <KanbanColumn

@@ -24,6 +24,7 @@ interface Actions {
   logout: () => void;
   fetchTasks: () => Promise<void>;
   updateTaskStatus: (taskId: number, status: string) => Promise<void>;
+  createTask: (taskData: { title: string; description: string; }) => Promise<void>;
 }
 
 // Combineer State en Actions in een 'Store' type
@@ -95,6 +96,15 @@ logout: () => {
       // Bij een fout, zet de originele taken terug
       set({ tasks: originalTasks });
       console.error("Failed to update task status:", error);
+    }
+  },
+
+  createTask: async (taskData: { title: string; description: string; }) => {
+    try {
+        await axiosInstance.post('/tasks', taskData);
+        get().fetchTasks(); // Herlaad de takenlijst om de nieuwe taak te tonen
+    } catch (error) {
+        console.error("Failed to create task:", error);
     }
   },
 }));
