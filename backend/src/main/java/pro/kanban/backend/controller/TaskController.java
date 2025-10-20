@@ -41,6 +41,7 @@ public class TaskController {
     public ResponseEntity<Task> createTask(Principal principal, @RequestBody Task newTask) {
         User user = getUserByPrincipal(principal);
         newTask.setUser(user);
+        newTask.setStatus("TODO"); // <-- DE CRUCIALE FIX
         Task savedTask = taskRepository.save(newTask);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
     }
