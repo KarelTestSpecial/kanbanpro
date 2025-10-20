@@ -1,6 +1,6 @@
 import { useState, useEffect, type ReactElement } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'; // Add useNavigate
-import { DndContext, type DragEndEvent, type DragStartEvent, DragOverlay } from '@dnd-kit/core';
+import { DndContext, type DragEndEvent, type DragStartEvent, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Box, Container, Typography, Button } from '@mui/material'; // Add Button
 
@@ -54,12 +54,20 @@ const KanbanBoard = () => {
     setActiveId(null);
 };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    })
+  );
+
   const statuses = ['TODO', 'IN_PROGRESS', 'DONE'];
   const taskIds = tasks.map(t => t.id);
   const activeTask = tasks.find(t => t.id === activeId);
 
   return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>

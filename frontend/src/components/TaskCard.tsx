@@ -26,17 +26,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     setNodeRef,
     transform,
     transition,
-  } = useSortable({
-    id: task.id,
-    data: {
-      type: 'Task',
-      task,
-    },
-    // Zorgt ervoor dat klikken op knoppen niet de sleep-actie activeert
-    activationConstraint: {
-      distance: 15, // Sleep start pas na 15px beweging
-    },
-  });
+  } = useSortable({ id: task.id });
 
   const handleDelete = () => {
     deleteTask(task.id);
