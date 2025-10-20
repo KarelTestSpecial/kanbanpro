@@ -19,15 +19,15 @@ interface State {
 
 // Definiëer de Acties interface
 interface Actions {
-  login: (username, password) => Promise<void>;
-  register: (username, password) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
+  register: (username: string, password: string) => Promise<void>;
   logout: () => void;
   fetchTasks: () => Promise<void>;
   updateTaskStatus: (taskId: number, status: string) => Promise<void>;
 }
 
 // Combineer State en Actions in een 'Store' type
-type Store = State & Actions;
+export type Store = State & Actions;
 
 // Maak een axios instance aan
 const axiosInstance = axios.create({

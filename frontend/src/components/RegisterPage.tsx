@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Box, Typography, TextField, Button } from '@mui/material';
-import useStore from '../store';
+import useStore, { type Store } from '../store';
 
 const RegisterPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const register = useStore((state) => state.register);
+  const register = useStore((state: Store) => state.register);
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -32,7 +32,7 @@ const RegisterPage: React.FC = () => {
         sx={{
           marginTop: 8,
           display: 'flex',
-          flexDirection: 'column
+          flexDirection: 'column',
           alignItems: 'center',
         }}
       >

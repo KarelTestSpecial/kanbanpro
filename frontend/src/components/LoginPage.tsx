@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Box, Typography, TextField, Button } from '@mui/material';
-import useStore from '../store';
+import useStore, { type Store } from '../store';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const login = useStore((state) => state.login);
+  const login = useStore((state: Store) => state.login);
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {

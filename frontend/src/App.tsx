@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactElement } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { DndContext, DragEndEvent, DragStartEvent, DragOverlay } from '@dnd-kit/core';
+import { DndContext, type DragEndEvent, type DragStartEvent, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Box, Container, Typography } from '@mui/material';
 
@@ -11,22 +11,22 @@ import KanbanColumn from './components/KanbanColumn';
 import TaskCard from './components/TaskCard';
 
 // Store-import
-import useStore from './store';
+import useStore, { type Store } from './store';
 
 // --- PrivateRoute voor geauthenticeerde toegang ---
-const PrivateRoute = ({ children }: { children: JSX.Element }) => {
-  const isAuthenticated = useStore((state) => state.isAuthenticated);
+const PrivateRoute = ({ children }: { children: ReactElement }) => {
+  const isAuthenticated = useStore((state: Store) => state.isAuthenticated);
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 // --- KanbanBoard Component ---
 const KanbanBoard = () => {
-  const { tasks, fetchTasks, updateTaskStatus } = useStore((state) => ({
+  const { tasks, fetchTasks, updateTaskStatus } = useStore((state: Store) => ({
     tasks: state.tasks,
     fetchTasks: state.fetchTasks,
     updateTaskStatus: state.updateTaskStatus,
   }));
-  const [activeId, setActiveId] = useState<any>(null);
+  const [activeId, setActiveId] = useState<string | number | null>(null);
 
   useEffect(() => {
     fetchTasks();
