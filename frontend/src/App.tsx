@@ -30,7 +30,7 @@ const KanbanBoard = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks]);
+  }, []);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id);
