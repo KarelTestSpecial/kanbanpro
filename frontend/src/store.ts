@@ -78,6 +78,7 @@ logout: () => {
         set({ tasks: response.data });
     } catch (error) {
         console.error("Failed to fetch tasks, token might be invalid:", error);
+        get().logout(); // LOG DE GEBRUIKER UIT
     }
 },
 
