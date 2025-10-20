@@ -1,22 +1,23 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { vi } from 'vitest';
 import '@testing-library/jest-dom';
 import TaskCard from './TaskCard';
 
 // Mock de @dnd-kit/sortable hook omdat deze een DndContext provider vereist.
 // Voor deze unit test focussen we alleen op het renderen van de content.
-jest.mock('@dnd-kit/sortable', () => ({
+vi.mock('@dnd-kit/sortable', () => ({
   useSortable: () => ({
     attributes: {},
     listeners: {},
-    setNodeRef: jest.fn(),
+    setNodeRef: vi.fn(),
     transform: null,
     transition: null,
   }),
 }));
 
 // Mock de @dnd-kit/utilities omdat de component deze gebruikt voor CSS transformaties.
-jest.mock('@dnd-kit/utilities', () => ({
+vi.mock('@dnd-kit/utilities', () => ({
   CSS: {
     Transform: {
       toString: () => '', // Geef een lege string terug voor de stijl
