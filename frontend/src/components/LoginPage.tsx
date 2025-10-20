@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import useStore, { type Store } from '../store';
 
@@ -72,6 +72,9 @@ const LoginPage: React.FC = () => {
           >
             Sign In
           </Button>
+          <Typography variant="body2" align="center">
+            Nog geen account? <Link to="/register">Registreer hier</Link>
+          </Typography>
         </Box>
       </Box>
     </Container>
