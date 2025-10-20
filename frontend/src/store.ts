@@ -25,6 +25,7 @@ interface Actions {
   fetchTasks: () => Promise<void>;
   updateTaskStatus: (taskId: number, status: string) => Promise<void>;
   createTask: (taskData: { title: string; description: string; }) => Promise<void>;
+  deleteTask: (taskId: number) => Promise<void>;
 }
 
 // Combineer State en Actions in een 'Store' type
@@ -114,6 +115,22 @@ logout: () => {
         console.error("Failed to create task:", error);
     }
 },
+
+  deleteTask: async (taskId: number) => {
+    const originalTasks = get().tasks;
+    // Optimistic UI update
+    set((state) => ({
+      tasks: state.tasks.filter(task => task.id !== taskId)
+    }));
+
+    try {
+      await axiosInstance.delete(`/tasks/${taskId}`);
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+      // Rollback op fout
+      set({ tasks: originalTasks });
+    }
+  },
 }));
 
 // Voeg een request interceptor toe om de JWT token automatisch mee te sturen

@@ -1,8 +1,8 @@
 import { useState, useEffect, type ReactElement } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'; // Add useNavigate
 import { DndContext, type DragEndEvent, type DragStartEvent, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography, Button } from '@mui/material'; // Add Button
 
 // Component-imports
 import LoginPage from './components/LoginPage';
@@ -25,7 +25,14 @@ const KanbanBoard = () => {
   const tasks = useStore((state: Store) => state.tasks);
   const fetchTasks = useStore((state: Store) => state.fetchTasks);
   const updateTaskStatus = useStore((state: Store) => state.updateTaskStatus);
+  const logout = useStore((state: Store) => state.logout); // Add this line
+  const navigate = useNavigate(); // Add this line
   const [activeId, setActiveId] = useState<string | number | null>(null);
+
+  const handleLogout = () => { // Add this function
+    logout();
+    navigate('/login');
+  };
 
   useEffect(() => {
     fetchTasks();
@@ -55,9 +62,14 @@ const KanbanBoard = () => {
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Kanban Board
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h4" component="h1">
+              Kanban Board
+            </Typography>
+            <Button variant="outlined" color="secondary" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Box>
           <CreateTaskForm /> {/* Add this component */}
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
             {statuses.map((status) => (

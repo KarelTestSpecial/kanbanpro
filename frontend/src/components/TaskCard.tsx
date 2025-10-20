@@ -1,13 +1,16 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography, IconButton } from '@mui/material'; // Add IconButton
+import DeleteIcon from '@mui/icons-material/Delete'; // Add DeleteIcon
+import useStore, { type Store } from '../store'; // Import useStore and Store type
 
 // Interface voor de taak data
 interface Task {
   id: any; // Moet 'any' of 'string | number' zijn voor dnd-kit
   title: string;
   description: string;
+  status: string; // Add status
 }
 
 // Interface voor de component props
@@ -16,6 +19,7 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+  const deleteTask = useStore((state: Store) => state.deleteTask); // Get deleteTask action
   const {
     attributes,
     listeners,
@@ -34,13 +38,25 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <Card>
-        <CardContent>
+        <CardContent sx={{ position: 'relative' }}> {/* Add position: 'relative' for absolute positioning */}
           <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
             {task.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {task.description}
           </Typography>
+          <IconButton
+            aria-label="delete"
+            size="small"
+            onClick={() => deleteTask(task.id)}
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+            }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
         </CardContent>
       </Card>
     </div>
