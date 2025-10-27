@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Box, Typography } from '@mui/material';
 import TaskCard from './TaskCard';
 
@@ -48,10 +49,11 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ status, tasks }) => {
         {status.replace('_', ' ').toLowerCase()}
       </Typography>
       <Box sx={{ flexGrow: 1 }}>
-        {/* Render een TaskCard voor elke taak in deze kolom */}
-        {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
+        <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
+          {tasks.map((task) => (
+            <TaskCard key={task.id} task={task} />
+          ))}
+        </SortableContext>
       </Box>
     </Box>
   );
