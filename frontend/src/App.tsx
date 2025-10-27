@@ -25,6 +25,7 @@ const KanbanBoard = () => {
   const tasks = useStore((state: Store) => state.tasks);
   const fetchTasks = useStore((state: Store) => state.fetchTasks);
   const updateTaskStatus = useStore((state: Store) => state.updateTaskStatus);
+  const reorderTasks = useStore((state: Store) => state.reorderTasks);
   const logout = useStore((state: Store) => state.logout); // Add this line
   const navigate = useNavigate(); // Add this line
   const [activeId, setActiveId] = useState<string | number | null>(null);
@@ -44,15 +45,34 @@ const KanbanBoard = () => {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-        const taskId = Number(active.id);
-        const newStatus = over.id as string;
-        
-        updateTaskStatus(taskId, newStatus);
-    }
     setActiveId(null);
-};
+
+    if (!over) return;
+
+    if (active.id === over.id) return;
+
+    const statuses = ['TODO', 'IN_PROGRESS', 'DONE'];
+    const activeId = active.id;
+    const overId = over.id;
+
+    // Scenario 1: Item wordt naar een andere kolom gesleept
+    if (statuses.includes(overId as string)) {
+        const newStatus = overId as string;
+        updateTaskStatus(Number(activeId), newStatus);
+        return;
+    }
+
+    // Scenario 2: Item wordt herschikt binnen dezelfde kolom
+    const activeTask = tasks.find(t => t.id === activeId);
+    const overTask = tasks.find(t => t.id === overId);
+
+    if (activeTask && overTask && activeTask.status === overTask.status) {
+        reorderTasks(Number(activeId), Number(overId));
+    } else if (activeTask && overTask && activeTask.status !== overTask.status) {
+        // Scenario 3: Item wordt op een andere kaart in een ANDERE kolom gedropt
+        updateTaskStatus(Number(activeId), overTask.status);
+    }
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
