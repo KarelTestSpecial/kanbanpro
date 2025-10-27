@@ -48,7 +48,7 @@ const KanbanBoard = () => {
     if (over && active.id !== over.id) {
         const taskId = Number(active.id);
         const newStatus = over.id as string;
-        
+
         updateTaskStatus(taskId, newStatus);
     }
     setActiveId(null);

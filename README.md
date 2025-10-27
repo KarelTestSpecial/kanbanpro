@@ -75,3 +75,55 @@ Het hoofddoel van dit project is om een realistisch en uitgebreid voorbeeld te g
     npm run dev
     ```
     De frontend is nu beschikbaar op `http://localhost:5173` en verwacht dat de backend draait op `http://localhost:8080`.
+
+## Deployment op Render.com
+
+Dit project is geconfigureerd voor eenvoudige deployment op [Render](https://render.com/).
+
+### Initiële Setup
+
+Om de applicatie van GitHub naar Render over te brengen, moet je twee aparte services aanmaken: een **Web Service** voor de frontend en een **Private Service** voor de backend.
+
+#### 1. Backend Deployment (Private Service)
+
+1.  **Maak een nieuwe PostgreSQL-database aan op Render.**
+    *   Ga naar het "Databases"-gedeelte en maak een nieuwe PostgreSQL-database aan.
+    *   Kopieer de **interne database-URL**; deze heb je nodig voor de backend-configuratie.
+
+2.  **Maak een nieuwe Private Service aan en koppel deze aan je GitHub-repository.**
+    *   **Runtime:** `Docker`
+    *   **Build Command:** Render zal automatisch bouwen met de `Dockerfile` in de `backend`-map.
+    *   **Start Command:** Render zal automatisch starten met de `CMD`-instructie in de `Dockerfile`.
+
+3.  **Configureer de omgevingsvariabelen:**
+    *   `SPRING_DATASOURCE_URL`: De interne database-URL van je PostgreSQL-database.
+    *   `SPRING_DATASOURCE_USERNAME`: De gebruikersnaam van je PostgreSQL-database.
+    *   `SPRING_DATASOURCE_PASSWORD`: Het wachtwoord van je PostgreSQL-database.
+    *   `APPLICATION_SECURITY_JWT_SECRET_KEY`: Een lange, willekeurige en veilige string die wordt gebruikt als JWT-geheime sleutel.
+
+#### 2. Frontend Deployment (Web Service)
+
+1.  **Maak een nieuwe Web Service aan en koppel deze aan je GitHub-repository.**
+    *   **Root Directory:** `frontend`
+    *   **Build Command:** `npm install && npm run build`
+    *   **Publish Directory:** `dist`
+
+2.  **Configureer de omgevingsvariabelen:**
+    *   `VITE_API_BASE_URL`: De URL van je backend-service op Render (bijv. `https://kanbanpro-backend.onrender.com/api`).
+
+### Een Nieuwe Versie Publiceren
+
+Render is geconfigureerd om automatisch te deployen wanneer er nieuwe commits naar de `main`-branch van je GitHub-repository worden gepusht.
+
+1.  **Bouw en test je wijzigingen lokaal.**
+    *   `cd backend && ./mvnw clean install`
+    *   `cd frontend && npm test`
+
+2.  **Commit en push je wijzigingen naar de `main`-branch.**
+    ```bash
+    git add .
+    git commit -m "Beschrijvende commit-boodschap"
+    git push origin main
+    ```
+
+3.  **Render zal de nieuwe commit detecteren en automatisch een nieuwe build en deployment starten voor de respectievelijke service (frontend of backend).** Je kunt de voortgang van de deployment volgen in je Render-dashboard.
