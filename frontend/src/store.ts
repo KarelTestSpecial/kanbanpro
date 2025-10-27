@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { arrayMove } from '@dnd-kit/sortable';
 
 // Definiëer de Task interface
 interface Task {
@@ -25,7 +24,6 @@ interface Actions {
   logout: () => void;
   fetchTasks: () => Promise<void>;
   updateTaskStatus: (taskId: number, status: string) => Promise<void>;
-  reorderTasks: (activeId: number, overId: number) => void;
   createTask: (taskData: { title: string; description: string; }) => Promise<void>;
   deleteTask: (taskId: number) => Promise<void>;
 }
@@ -104,21 +102,6 @@ logout: () => {
         // Rollback op fout
         set({ tasks: originalTasks });
     }
-},
-
-reorderTasks: (activeId, overId) => {
-    set((state) => {
-        const activeIndex = state.tasks.findIndex((t) => t.id === activeId);
-        const overIndex = state.tasks.findIndex((t) => t.id === overId);
-
-        if (activeIndex === -1 || overIndex === -1) {
-            return { tasks: state.tasks }; // Geen wijziging als taken niet gevonden worden
-        }
-
-        return {
-            tasks: arrayMove(state.tasks, activeIndex, overIndex),
-        };
-    });
 },
 
   createTask: async (taskData: { title: string; description: string; }) => {
